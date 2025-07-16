@@ -6,10 +6,10 @@ The chapters will be sorted according to the topics covered in the lecture serie
 ## Progression
 
 1. Introduction to Cryptography
-2. [Modular Arithmetic and Historical Ciphers](progression/lecture2/lecture2.md)
-3. [Stream Ciphers, Random Numbers and the One Time Pad](progression/lecture3/lecture3.md)
-4. [Stream Ciphers and Linear Feedback Shift Registers](progression/lecture4/lecture4.md)
-5. [Data Encryption Standard (DES): Encryption](progression/lecture5/lecture5.md)
-6. [Data Encryption Standard (DES): Key Schedule and Decryption](progression/lecture6/lecture6.md)
+2. [Modular Arithmetic and Historical Ciphers](progression/lecture2)
+3. [Stream Ciphers, Random Numbers and the One Time Pad](progression/lecture3)
+4. [Stream Ciphers and Linear Feedback Shift Registers](progression/lecture4)
+5. [Data Encryption Standard (DES): Encryption](progression/lecture5)
+6. [Data Encryption Standard (DES): Key Schedule and Decryption](progression/lecture6)
 
 ---
