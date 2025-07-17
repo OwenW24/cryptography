@@ -1,5 +1,5 @@
-#ifndef ATTACKS_HPP
-#define ATTACKS_HPP
+#ifndef ATTACK_HPP
+#define ATTACK_HPP
 
 class Freq{};
 

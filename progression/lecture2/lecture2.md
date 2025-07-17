@@ -27,7 +27,7 @@ If $a, m \in \mathbb{Z}$ then $[a]_m$ is the set of all integers that are congru
 The integer ring $\mathbb Z _m$ consists of:  
 
 1. The set $\mathbb Z_m = \{0,1,2,\dots, m-1\}$
-2. Two operations "$+$" and "$\cdot$"for all $a, b \in \mathbb Z_m$ such that:  
+2. Two operations " $+$ " and " $\cdot$ " for all $a, b \in \mathbb Z_m$ such that:  
     1. $a+b \equiv c \mod m \quad (c \in \mathbb Z_m)$
     2. $a\cdot b \equiv d \mod m \quad (d \in \mathbb Z_m)$  
 
@@ -49,4 +49,4 @@ $d_k(y) \equiv y- k \mod 26$
 **Definition** Affine Cipher  
 Let $x,y,a,b \in \mathbb Z_{26}$. Where key $k=(a,b)$ and $\gcd(a,26) = 1$  
 $e_k(x) \equiv a \cdot x + b \mod 26$  
-$d_k(y) \equiv a^{-1} \cdot (y - k) \mod 26$
+$d_k(y) \equiv a^{-1} \cdot (y - b) \mod 26$
