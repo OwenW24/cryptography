@@ -31,7 +31,7 @@ class Freq{
         
         void find_freq(){ // assemble ys_count, and frq_ys
             int n = ys.size();
-            for (char y: ys) ys_count[y] ++;
+            for (char y: ys) if (isalpha(y)) ys_count[y]++;
             for (auto y : ys_count) frq_ys.push_back({y.first, y.second / (double) n});
             std::sort(frq_ys.begin(), frq_ys.end(), cmp);
         }
@@ -42,6 +42,7 @@ class Freq{
         }
 
         void assembleXs(){
+            xs = "";
             for(char y: ys){
                 if (!isalpha(y)) xs += y;
                 else xs += tolower(ys_to_xs[y]);
@@ -51,7 +52,7 @@ class Freq{
     public:
 
         Freq(std::string ys){
-            this->ys = ys;
+            for (char y : ys) this->ys += toupper(y);
             find_freq();
             map_freq();
             assembleXs();
@@ -59,6 +60,39 @@ class Freq{
         std::string get_ys(){ return ys; }
 
         std::string get_xs(){ return xs; }
+
+        void print_table(){
+            std::cout << "abc : abc_freq |-> y : y_freq" << std::endl;
+            std::cout << "------------------------------" << std::endl;
+            for(int i = 0; i < 26; i++){
+                std::cout << frq_abc[i].first << " : " << frq_abc[i].second << " |-> " << frq_ys[i].first << " : " << frq_ys[i].second << " " << i << std::endl;
+            }
+        }
+
+        void adjust(){
+            std::string swapped = "";
+            std::cout << "to return, enter -1" << std::endl;
+            while (true){
+                print_table();
+                int c1;
+                int c2;
+                std::cout << "index 1: " << std::endl;
+                std::cin >> c1;
+                if (c1 < 0) break;
+                std::cout << "index 2: " << std::endl;
+                std::cin >> c2;
+                if (c2 < 0) break;
+
+                std::swap(frq_ys[c1], frq_ys[c2]);
+                swapped += c1 + c2;
+                map_freq();
+                assembleXs();
+                std::cout << std::endl << ys << std::endl;
+                std::cout << std::endl << xs << std::endl;
+                std::cout << "swapped " << swapped << std::endl;
+
+            }
+        }
 };
 
 #endif
