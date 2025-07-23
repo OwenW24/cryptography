@@ -11,5 +11,6 @@ The chapters will be sorted according to the topics covered in the lecture serie
 4. [Stream Ciphers and Linear Feedback Shift Registers](progression/lecture4)
 5. [Data Encryption Standard (DES): Encryption](progression/lecture5)
 6. [Data Encryption Standard (DES): Key Schedule and Decryption](progression/lecture6)
+7. [Introduction to Galois Fields for the AES](progression/lecture7)
 
 ---
