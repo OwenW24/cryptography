@@ -80,3 +80,19 @@ $$\text{MixColumn(B) = C}$$
 where $B$ is the state after the ShiftRows sublayer.  
 ![alt text](/images/image-4.png)  
 The resulting $C$ vectors will be calculated using Galois field multiplication and addition (modulo reduction).  
+
+### Key Schedule
+
+
+
+## Decryption
+All layers must be inverted for decryption
+- Byte Substitution -> Inv Byte  Substitution
+- Shift Rows -> Inv Shift Rows 
+- Mix Column -> Inv Mix Column
+- Key schedule -> reversed key schedule
+
+(insert decryption block here)
+
+
+
