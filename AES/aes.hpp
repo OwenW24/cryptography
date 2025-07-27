@@ -4,7 +4,9 @@
 
 class AES
 {
-private:
+
+public:
+    enum keySize{SIZE_16 = 16, SIZE_24 = 24, SIZE_32 = 32};
     unsigned char sbox[256] = {
     // 0     1    2      3     4    5     6     7      8    9     A      B    C     D     E     F
     0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76,  // 0
@@ -64,9 +66,9 @@ private:
     0x91, 0x39, 0x72, 0xe4, 0xd3, 0xbd, 0x61, 0xc2, 0x9f, 0x25, 0x4a, 0x94, 0x33,
     0x66, 0xcc, 0x83, 0x1d, 0x3a, 0x74, 0xe8, 0xcb};
 
-    enum keySize{SIZE_16 = 16, SIZE_24 = 24, SIZE_32 = 32};
-
-    unsigned char getSBoxValue(unsigned char num){return sbox[]};
+private:
+    enum errorCode {SUCCESS = 0, ERROR_AES_UNKOWN_KEYSIZE, ERROR_MEMORY_ALLOCATION_FAILED};
+    unsigned char getSBoxValue(unsigned char num);
     unsigned char getSBoxInvert(unsigned char num);
     unsigned char getRconValue(unsigned char num);
 
@@ -98,6 +100,42 @@ private:
     void createRoundKey(unsigned char* expandedKey, unsigned char* roundKey);
     void aes_round(unsigned char* state, unsigned char* roundKey);
     void aes_main(unsigned char* state, unsigned char* expandedKey, int numRounds);
+    char aes_encrypt(unsigned char* input, unsigned char* output, unsigned char* key, enum keySize size);
+
+// AES Decryption
+    void invByteSub(unsigned char* state);
+
+    void invShiftRow(unsigned char* state, unsigned char num);
+    void invShiftRows(unsigned char* state);
+
+    void invMixColumn(unsigned char* column);
+    void invMixColumns(unsigned char* state);
+
+    void aes_invRound(unsigned char* state, unsigned char* roundKey);
+    void aes_invMain(unsigned char* state, unsigned char* expandedKey, int numRounds);
+    char aes_decrypt(unsigned char* input, unsigned char* output, unsigned char* key, enum keySize size);
+
+    unsigned char* plaintext;
+    unsigned char* ciphertext;
+    unsigned char* decryptedtext;
+    unsigned char* key;
+    enum keySize size;
+public:
+    AES();
+
+    void set_plaintext(unsigned char* plaintext);
+    void set_ciphertext(unsigned char* ciphertext);
+    void set_decryptedtext(unsigned char* decryptedtext);
+    void set_key(unsigned char* key);
+    void set_keySize(enum keySize size);
+
+    unsigned char* get_plaintext();
+    unsigned char* get_ciphertext();
+    unsigned char* get_decryptedtext();
+
+    void encrypt();
+    void decrypt();
+
 
 
 };

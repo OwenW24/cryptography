@@ -7,7 +7,10 @@ unsigned char AES::getRconValue(unsigned char num){return rcon[num];}
 // AES Encryption
 
 // Byte Substitution
-void AES::byteSub(unsigned char* state){}
+void AES::byteSub(unsigned char* state)
+{
+    for (int i = 0; i < 16; i++) state[i] = getSBoxValue(state[i]);
+}
 
 // Diffusion Layer
 
@@ -38,7 +41,7 @@ unsigned char AES::galois_multiplication(unsigned char a, unsigned char b)
         if ((b & 1) == 1) p ^= a;
         hi_bit_set = (a & 0x80);
         a <<= 1;
-        if (hi_bit_set == 0x80) a^= 0x80;
+        if (hi_bit_set == 0x80) a^= 0x1B;
         b >>= 1;
     }
     return p;
@@ -58,7 +61,7 @@ void AES::mixColumns(unsigned char* state)
     unsigned char column[4];
     for (int i = 0; i < 4; i++)
     {
-        for (int j = 0; j < 4; j++) column[j] = state[(j * 4) + 1];
+        for (int j = 0; j < 4; j++) column[j] = state[(j * 4) + i];
         mixColumn(column);
         for (int j = 0; j < 4; j++) state[((j * 4) + i)] = column[j];
     }
@@ -82,7 +85,7 @@ void AES::core(unsigned char* word, int it)
 {
     rotate(word);
     for (int i = 0; i < 4; i++) word[i] = getSBoxValue(word[i]);
-    word[0] = word[0] & getRconValue(it);
+    word[0] = word[0] ^ getRconValue(it);
 
 }
 void AES::expandKey(unsigned char* expandedKey, unsigned char* key, enum keySize size, size_t expandedKeySize)
@@ -93,7 +96,7 @@ void AES::expandKey(unsigned char* expandedKey, unsigned char* key, enum keySize
     for (int i = 0; i < size; i++) expandedKey[i] = key[i];
     currentSize += size;
     while (currentSize < expandedKeySize){
-        for (int i = 0; i < 4; i++) tmp[i] = expandedKey[(currentSize - 4) + 1];
+        for (int i = 0; i < 4; i++) tmp[i] = expandedKey[(currentSize - 4) + i];
         
         if (currentSize % size == 0) core(tmp, rconIt++);
         
@@ -135,3 +138,166 @@ void AES::aes_main(unsigned char* state, unsigned char* expandedKey, int numRoun
     shiftRows(state);
     keyAddition(state, roundKey);
 }
+
+char AES::aes_encrypt(unsigned char* input, unsigned char* output, unsigned char* key, enum keySize size)
+{
+    int expandedKeySize;
+    int numRounds;
+    unsigned char* expandedKey;
+    unsigned char block[16];
+    switch (size)
+    {
+    case SIZE_16:
+        numRounds = 10;
+        break;
+    case SIZE_24:
+        numRounds = 12;
+        break;
+    case SIZE_32:
+        numRounds = 14;
+        break;
+    default:
+        return ERROR_AES_UNKOWN_KEYSIZE;
+        break;
+    }
+    expandedKeySize = 16 * (numRounds + 1);
+
+    expandedKey = new unsigned char[expandedKeySize];
+
+    
+    if (!expandedKey) return ERROR_MEMORY_ALLOCATION_FAILED;
+    else
+    {
+        for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) block[(i + (j * 4))] = input[(i * 4) + j];
+        expandKey(expandedKey, key, size, expandedKeySize);
+        aes_main(block, expandedKey, numRounds);
+        for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) output[(i * 4) + j] = block[i + (j * 4)];
+        delete expandedKey;
+        expandedKey = nullptr;
+    }
+    return SUCCESS;
+}
+
+void AES::invByteSub(unsigned char *state)
+{
+    for (int i = 0; i < 16; i++) state[i] = getSBoxInvert(state[i]);
+}
+
+void AES::invShiftRow(unsigned char *state, unsigned char num)
+{
+    unsigned char tmp;
+    for (int i = 0; i < num; i++)
+    {
+        tmp = state[3];
+        for (int j = 3; j > 0; j--) state[j] = state[j - 1];
+        state[0] = tmp;
+    }
+}
+
+void AES::invShiftRows(unsigned char *state)
+{
+    for (int i = 0; i < 4; i++) invShiftRow(state + i * 4, i);
+}
+
+void AES::invMixColumn(unsigned char *column)
+{
+    unsigned char cpy[4];
+    for (int i = 0; i < 4; i++) cpy[i] = column[i];
+    column[0] = galois_multiplication(cpy[0], 14) ^ galois_multiplication(cpy[3], 9) ^ galois_multiplication(cpy[2], 13) ^ galois_multiplication(cpy[1], 11);
+    column[1] = galois_multiplication(cpy[1], 14) ^ galois_multiplication(cpy[0], 9) ^ galois_multiplication(cpy[3], 13) ^ galois_multiplication(cpy[2], 11);
+    column[2] = galois_multiplication(cpy[2], 14) ^ galois_multiplication(cpy[1], 9) ^ galois_multiplication(cpy[0], 13) ^ galois_multiplication(cpy[3], 11);
+    column[3] = galois_multiplication(cpy[3], 14) ^ galois_multiplication(cpy[2], 9) ^ galois_multiplication(cpy[1], 13) ^ galois_multiplication(cpy[0], 11);
+}
+
+void AES::invMixColumns(unsigned char *state)
+{
+    unsigned char column[4];
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++) column[j] = state[(j * 4) + i];
+        invMixColumn(column);
+        for (int j = 0; j < 4; j++) state[(j * 4) + i] = column[j];
+
+    }
+}
+
+void AES::aes_invRound(unsigned char *state, unsigned char *roundKey)
+{
+    invShiftRows(state);
+    invByteSub(state);
+    keyAddition(state, roundKey);
+    invMixColumns(state);
+}
+
+void AES::aes_invMain(unsigned char *state, unsigned char *expandedKey, int numRounds)
+{
+    unsigned char roundKey[16];
+    createRoundKey(expandedKey + 16 * numRounds, roundKey);
+    keyAddition(state, roundKey);
+    for (int i = numRounds - 1; i > 0; i--)
+    {
+        createRoundKey(expandedKey + 16 * i, roundKey);
+        aes_invRound(state, roundKey);
+    }
+    createRoundKey(expandedKey, roundKey);
+    invShiftRows(state);
+    invByteSub(state);
+    keyAddition(state, roundKey);
+
+}
+
+char AES::aes_decrypt(unsigned char *input, unsigned char *output, unsigned char *key, enum keySize size)
+{
+    int expandedKeySize;
+    int numRounds;
+    unsigned char* expandedKey;
+    unsigned char block[16];
+
+    switch (size)
+    {
+    case SIZE_16:
+        numRounds = 10;
+        break;
+    case SIZE_24:
+        numRounds = 12;
+        break;
+    case SIZE_32:
+        numRounds = 14;
+        break;
+    default:
+        return ERROR_AES_UNKOWN_KEYSIZE;
+        break;
+    }
+    expandedKeySize = (16 * (numRounds + 1));
+    expandedKey = new unsigned char[expandedKeySize];
+    if (!expandedKey) return ERROR_MEMORY_ALLOCATION_FAILED;
+    else{
+        for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) block[i + (j * 4)] = input[(i * 4) + j];
+        expandKey(expandedKey, key, size, expandedKeySize);
+        aes_invMain(block, expandedKey, numRounds);
+        for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) output[(i*4) + j] = block[i + (j * 4)];
+        delete expandedKey;
+        expandedKey = nullptr;
+    }
+    return SUCCESS;
+}
+
+
+
+// public methods
+AES::AES(){}
+
+void AES::set_plaintext(unsigned char* plaintext){this->plaintext = plaintext;}
+void AES::set_ciphertext(unsigned char* ciphertext){this->ciphertext = ciphertext;}
+void AES::set_decryptedtext(unsigned char* decryptedtext){this->decryptedtext = decryptedtext;}
+void AES::set_key(unsigned char* key){this->key = key;}
+void AES::set_keySize(enum keySize size){this->size = size;}
+
+unsigned char* AES::get_plaintext(){return plaintext;}
+unsigned char* AES::get_ciphertext(){return ciphertext;}
+unsigned char* AES::get_decryptedtext(){return decryptedtext;}
+
+
+void AES::encrypt(){aes_encrypt(plaintext, ciphertext, key, size);}
+void AES::decrypt(){aes_decrypt(ciphertext, decryptedtext, key, size);}
+
