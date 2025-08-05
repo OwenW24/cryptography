@@ -36,8 +36,8 @@ private:
 public:
     void enc(pair<long, long> pub);
     void dec();
-    void set_plaintext(long xs);
-    void set_ciphertext(long ys);
+    void set_plaintext(long x);
+    void set_ciphertext(long y);
 
     long get_plaintext();
     long get_ciphertext();

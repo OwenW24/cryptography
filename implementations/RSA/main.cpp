@@ -3,22 +3,29 @@
 int main()
 {
     RSA alice;
-    RSA bob(991, 997);  // problem with small ps and qs breaks with some large nums
-    // biggest problem is when d is super big, doing exponents is tough, need to optimize
-    // need an algorithm thatll choose the lowest e and d pair
-    int message = 123;
-    cout << message << endl;
-    alice.set_plaintext(message);
-    cout << bob.get_public_key().first << " " << bob.get_public_key().second << endl;
-    alice.enc(bob.get_public_key());
-
-    int ys = alice.get_ciphertext();
-    cout << ys << endl;
-    bob.set_ciphertext(ys);
-    bob.dec();
+    RSA bob(991, 997);
     
-    int xs = bob.get_plaintext();
+    string message = "This_is_a_DSA_Key";
+    cout << message << endl;
+    vector<long> ys;
+    for (long x : message)
+    {
+        alice.set_plaintext(x);
+        alice.enc(bob.get_public_key());
+        ys.push_back(alice.get_ciphertext());
+    }
 
+    for (long y:ys) cout << y << " ";
+    cout << endl; 
+
+    string xs;
+    for (long y: ys)
+    {
+        bob.set_ciphertext(y);
+        bob.dec();
+        xs.push_back(bob.get_plaintext());
+    }
     cout << xs << endl;
+
     return 0;
 }

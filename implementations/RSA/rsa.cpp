@@ -7,10 +7,6 @@ void RSA::key_gen()
     
     // determine e in {1,2,phi-1} st gcd(e, phi) = 1
 
-    // make a more efficient way to find e and d min
-    // not totally necessary to find min here actually
-    // should maybe figure out a way to exclude numbers that exceed a certain power
-
     // d & e efficient method -----------------
     int min = __INT_MAX__;
     int min_idx = 0;
@@ -33,23 +29,7 @@ void RSA::key_gen()
     }
     long e = e_and_d[min_idx].first;
     k.prv = e_and_d[min_idx].second;
-    // d & e efficient method -----------------
-
-
-    // // d & e random method  -----------------
-    // long e = 1;
-    // srand(time(0));
-    // do
-    // {
-    //     e = (rand() % (k.phi-2)) + 2;
-    // } while (extended_euclid(e, k.phi).first != 1);
-    // // d & e random method  -----------------
-
     k.pub = {k.p * k.q, e};
-
-    cout << e << "<-e" << endl;
-    cout << k.prv << "<-d" << endl;
-    cout << k.phi << "<-phi" << endl;
 }
 
 
@@ -130,28 +110,24 @@ long RSA::dec_char(long y)
 
 void RSA::enc(pair<long, long> pub)
 {
-    // if (plaintext.empty()) return;  // should throw error here
-    // for (char x: plaintext) ciphertext += enc_char(long(x));
     ciphertext = enc_char(plaintext, pub);
-
 }
 
 void RSA::dec()
 {
-    // if (ciphertext.empty()) return;  // should throw error here
-    // for (char y: ciphertext) plaintext += dec_char(long(y));
-
     plaintext = dec_char(ciphertext);
 }
 
-void RSA::set_plaintext(long xs)
+void RSA::set_plaintext(long x)
 {
-    plaintext = xs;
+    plaintext = x;
+    ciphertext = 0;
 }
 
-void RSA::set_ciphertext(long ys)
+void RSA::set_ciphertext(long y)
 {
-    ciphertext = ys;
+    plaintext = 0;
+    ciphertext = y;
 }
 
 long RSA::get_plaintext()
@@ -171,7 +147,8 @@ pair<long, long> RSA::get_public_key()
 
 RSA::RSA()
 {
-
+    plaintext = 0;
+    ciphertext = 0;
 }
 
 RSA::RSA(long p, long q)
