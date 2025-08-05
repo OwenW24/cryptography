@@ -81,7 +81,7 @@ long RSA::exp(long x, long H, long n)
         H *= -1;
     }
     else if (H < 0) H*=-1;
-    bitset<1024> h(H);
+    bitset<32> h(H);
     long t = h.size() - 1;
     while (h[t] != 1) {t--;}
     long r = x;
@@ -112,7 +112,7 @@ long RSA::fermat(long p)
 }
 
 
-long RSA::enc_char(long x, pair<long, long> pub)
+char RSA::enc_char(long x, pair<long, long> pub)
 {
     long n = pub.first;
     long e = pub.second;
@@ -120,7 +120,7 @@ long RSA::enc_char(long x, pair<long, long> pub)
     return y;
 }
 
-long RSA::dec_char(long y)
+char RSA::dec_char(long y)
 {
     long n = k.pub.first;
     long d = k.prv; 
@@ -130,36 +130,38 @@ long RSA::dec_char(long y)
 
 void RSA::enc(pair<long, long> pub)
 {
-    // if (plaintext.empty()) return;  // should throw error here
-    // for (char x: plaintext) ciphertext += enc_char(long(x));
-    ciphertext = enc_char(plaintext, pub);
+    if (plaintext.empty()) return;  // should throw error here
+    ciphertext = "";
+    for (char x: plaintext) ciphertext += enc_char(long(x), pub);
+    // ciphertext = enc_char(plaintext, pub);
 
 }
 
 void RSA::dec()
 {
-    // if (ciphertext.empty()) return;  // should throw error here
-    // for (char y: ciphertext) plaintext += dec_char(long(y));
+    if (ciphertext.empty()) return;  // should throw error here
+    plaintext = "";
+    for (long y: ciphertext) plaintext += dec_char(long(y));
 
-    plaintext = dec_char(ciphertext);
+    // plaintext = dec_char(ciphertext);
 }
 
-void RSA::set_plaintext(long xs)
+void RSA::set_plaintext(string xs)
 {
     plaintext = xs;
 }
 
-void RSA::set_ciphertext(long ys)
+void RSA::set_ciphertext(string ys)
 {
     ciphertext = ys;
 }
 
-long RSA::get_plaintext()
+string RSA::get_plaintext()
 {
     return plaintext;
 }
 
-long RSA::get_ciphertext()
+string RSA::get_ciphertext()
 {
     return ciphertext;
 }

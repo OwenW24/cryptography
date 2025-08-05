@@ -16,8 +16,8 @@ private:
     };
 
     key k;
-    long plaintext;
-    long ciphertext;
+    string plaintext;
+    string ciphertext;
 
     void key_gen();
 
@@ -26,8 +26,8 @@ private:
     long fermat(long p);
 
     
-    long enc_char(long x, pair<long, long> pub);
-    long dec_char(long y);
+    char enc_char(long x, pair<long, long> pub);
+    char dec_char(long y);
 
 
     // helpers
@@ -36,11 +36,11 @@ private:
 public:
     void enc(pair<long, long> pub);
     void dec();
-    void set_plaintext(long xs);
-    void set_ciphertext(long ys);
+    void set_plaintext(string xs);
+    void set_ciphertext(string ys);
 
-    long get_plaintext();
-    long get_ciphertext();
+    string get_plaintext();
+    string get_ciphertext();
     pair<long, long> get_public_key();
 
     RSA();
