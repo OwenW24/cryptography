@@ -5,7 +5,7 @@ int main()
     RSA alice;
     RSA bob(3001, 2999);
 
-    string message = "This_is_a_DSA_Key";
+    string message = "This_is_a_AES_Key";
     alice.set_plaintext(message);
     alice.enc(bob.get_public_key());
 
