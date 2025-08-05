@@ -10,35 +10,40 @@ class RSA
 {
 private:
     struct key{
-        int p, q, phi;
-        pair<int, int> pub;
-        int prv;
+        long p, q, phi;
+        pair<long, long> pub;
+        long prv;
     };
 
     key k;
-    string plaintext;
-    string ciphertext;
+    long plaintext;
+    long ciphertext;
 
     void key_gen();
-    char enc_char(int x);
-    char dec_char(int y);
+
+    pair<long,pair<long,long>> extended_euclid(long r0, long r1);
+    long exp(long x, long H, long n);
+    long fermat(long p);
+
+    
+    long enc_char(long x, pair<long, long> pub);
+    long dec_char(long y);
 
 
     // helpers
-    pair<int,pair<int,int>> extended_euclid(int r0, int r1);
-    int exp(int x, int H, int n);
-    int fermat(int p);
+
 
 public:
-    void enc();
+    void enc(pair<long, long> pub);
     void dec();
-    void set_plaintext(string xs);
-    void set_ciphertext(string ys);
+    void set_plaintext(long xs);
+    void set_ciphertext(long ys);
 
-    string get_plaintext();
-    string get_ciphertext();
-    pair<int, int> get_public_key();
+    long get_plaintext();
+    long get_ciphertext();
+    pair<long, long> get_public_key();
 
     RSA();
+    RSA(long p, long q);
     
 }; //need to for decrpt, need to accept others public key
