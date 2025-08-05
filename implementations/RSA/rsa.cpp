@@ -7,10 +7,6 @@ void RSA::key_gen()
     
     // determine e in {1,2,phi-1} st gcd(e, phi) = 1
 
-    // make a more efficient way to find e and d min
-    // not totally necessary to find min here actually
-    // should maybe figure out a way to exclude numbers that exceed a certain power
-
     // d & e efficient method -----------------
     int min = __INT_MAX__;
     int min_idx = 0;
@@ -33,23 +29,7 @@ void RSA::key_gen()
     }
     long e = e_and_d[min_idx].first;
     k.prv = e_and_d[min_idx].second;
-    // d & e efficient method -----------------
-
-
-    // // d & e random method  -----------------
-    // long e = 1;
-    // srand(time(0));
-    // do
-    // {
-    //     e = (rand() % (k.phi-2)) + 2;
-    // } while (extended_euclid(e, k.phi).first != 1);
-    // // d & e random method  -----------------
-
     k.pub = {k.p * k.q, e};
-
-    cout << e << "<-e" << endl;
-    cout << k.prv << "<-d" << endl;
-    cout << k.phi << "<-phi" << endl;
 }
 
 
@@ -81,7 +61,7 @@ long RSA::exp(long x, long H, long n)
         H *= -1;
     }
     else if (H < 0) H*=-1;
-    bitset<32> h(H);
+    bitset<1024> h(H);
     long t = h.size() - 1;
     while (h[t] != 1) {t--;}
     long r = x;
@@ -112,7 +92,7 @@ long RSA::fermat(long p)
 }
 
 
-char RSA::enc_char(long x, pair<long, long> pub)
+long RSA::enc_char(long x, pair<long, long> pub)
 {
     long n = pub.first;
     long e = pub.second;
@@ -120,7 +100,7 @@ char RSA::enc_char(long x, pair<long, long> pub)
     return y;
 }
 
-char RSA::dec_char(long y)
+long RSA::dec_char(long y)
 {
     long n = k.pub.first;
     long d = k.prv; 
@@ -130,30 +110,30 @@ char RSA::dec_char(long y)
 
 void RSA::enc(pair<long, long> pub)
 {
-    if (plaintext.empty()) return;  // should throw error here
-    ciphertext = "";
-    for (char x: plaintext) ciphertext += enc_char(long(x), pub);
-    // ciphertext = enc_char(plaintext, pub);
-
+    ys.clear();
+    for (long x: plaintext) ys.push_back(enc_char(x, pub));
 }
 
 void RSA::dec()
 {
-    if (ciphertext.empty()) return;  // should throw error here
+    xs.clear();
+    plaintext.clear();
+    for (long y: ys) xs.push_back(dec_char(y));
+    for (long x: xs) plaintext.push_back(char(x));
+}
+
+void RSA::set_plaintext(string message)
+{
+    plaintext = message;
+    for (long x: plaintext) xs.push_back(long(x));
+    ys = {};
+}
+
+void RSA::set_ciphertext(vector<long> enc_msg)
+{
+    xs = {};
     plaintext = "";
-    for (long y: ciphertext) plaintext += dec_char(long(y));
-
-    // plaintext = dec_char(ciphertext);
-}
-
-void RSA::set_plaintext(string xs)
-{
-    plaintext = xs;
-}
-
-void RSA::set_ciphertext(string ys)
-{
-    ciphertext = ys;
+    ys = enc_msg;
 }
 
 string RSA::get_plaintext()
@@ -161,9 +141,9 @@ string RSA::get_plaintext()
     return plaintext;
 }
 
-string RSA::get_ciphertext()
+vector<long> RSA::get_ciphertext()
 {
-    return ciphertext;
+    return ys;
 }
 
 pair<long, long> RSA::get_public_key()
@@ -173,11 +153,16 @@ pair<long, long> RSA::get_public_key()
 
 RSA::RSA()
 {
-
+    plaintext = "";
+    xs = {};
+    ys = {};
 }
 
 RSA::RSA(long p, long q)
 {
+    plaintext = "";
+    xs = {};
+    ys = {};
     k.p = p;
     k.q = q;
     key_gen();
