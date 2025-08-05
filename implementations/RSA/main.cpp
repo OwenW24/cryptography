@@ -3,29 +3,19 @@
 int main()
 {
     RSA alice;
-    RSA bob(991, 997);
-    
+    RSA bob(3001, 2999);
+
     string message = "This_is_a_DSA_Key";
-    cout << message << endl;
-    vector<long> ys;
-    for (long x : message)
-    {
-        alice.set_plaintext(x);
-        alice.enc(bob.get_public_key());
-        ys.push_back(alice.get_ciphertext());
-    }
+    alice.set_plaintext(message);
+    alice.enc(bob.get_public_key());
 
-    for (long y:ys) cout << y << " ";
-    cout << endl; 
+    vector<long> ys = alice.get_ciphertext();
+    for (long y: ys) cout << y << " ";
+    cout << endl;
 
-    string xs;
-    for (long y: ys)
-    {
-        bob.set_ciphertext(y);
-        bob.dec();
-        xs.push_back(bob.get_plaintext());
-    }
-    cout << xs << endl;
+    bob.set_ciphertext(ys);
+    bob.dec();
+    cout << bob.get_plaintext();
 
     return 0;
 }

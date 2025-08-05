@@ -110,34 +110,40 @@ long RSA::dec_char(long y)
 
 void RSA::enc(pair<long, long> pub)
 {
-    ciphertext = enc_char(plaintext, pub);
+    ys.clear();
+    for (long x: plaintext) ys.push_back(enc_char(x, pub));
 }
 
 void RSA::dec()
 {
-    plaintext = dec_char(ciphertext);
+    xs.clear();
+    plaintext.clear();
+    for (long y: ys) xs.push_back(dec_char(y));
+    for (long x: xs) plaintext.push_back(char(x));
 }
 
-void RSA::set_plaintext(long x)
+void RSA::set_plaintext(string message)
 {
-    plaintext = x;
-    ciphertext = 0;
+    plaintext = message;
+    for (long x: plaintext) xs.push_back(long(x));
+    ys = {};
 }
 
-void RSA::set_ciphertext(long y)
+void RSA::set_ciphertext(vector<long> enc_msg)
 {
-    plaintext = 0;
-    ciphertext = y;
+    xs = {};
+    plaintext = "";
+    ys = enc_msg;
 }
 
-long RSA::get_plaintext()
+string RSA::get_plaintext()
 {
     return plaintext;
 }
 
-long RSA::get_ciphertext()
+vector<long> RSA::get_ciphertext()
 {
-    return ciphertext;
+    return ys;
 }
 
 pair<long, long> RSA::get_public_key()
@@ -147,12 +153,16 @@ pair<long, long> RSA::get_public_key()
 
 RSA::RSA()
 {
-    plaintext = 0;
-    ciphertext = 0;
+    plaintext = "";
+    xs = {};
+    ys = {};
 }
 
 RSA::RSA(long p, long q)
 {
+    plaintext = "";
+    xs = {};
+    ys = {};
     k.p = p;
     k.q = q;
     key_gen();

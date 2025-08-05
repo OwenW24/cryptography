@@ -16,8 +16,10 @@ private:
     };
 
     key k;
-    long plaintext;
-    long ciphertext;
+    // will contain a string plain and vector of longs for plain and cipher
+    string plaintext;
+    vector<long> xs;
+    vector<long> ys;
 
     void key_gen();
 
@@ -36,11 +38,11 @@ private:
 public:
     void enc(pair<long, long> pub);
     void dec();
-    void set_plaintext(long x);
-    void set_ciphertext(long y);
+    void set_plaintext(string message);
+    void set_ciphertext(vector<long> enc_msg);
 
-    long get_plaintext();
-    long get_ciphertext();
+    string get_plaintext();
+    vector<long> get_ciphertext();
     pair<long, long> get_public_key();
 
     RSA();
