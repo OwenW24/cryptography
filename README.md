@@ -4,14 +4,13 @@ This repository contains my notes, projects, and problems solved while studying 
 
 ## Progression
 
-1. [Intro to Cryptography and Data Security](progression/1_intro)
-    - [Caesar Cipher implementation](implementations/caesar_freqAnalysis/ciphers.hpp)
-    - [Frequency Analysis Implementation](implementations/caesar_freqAnalysis/ciphers.hpp)
-2. Stream Ciphers
-3. Data Encryption Standard (DES)
-4. [Advanced Encryption Standard (AES)](progression/4_AES/)
+- [Intro to Cryptography and Data Security](progression/1_intro)
+    - [Caesar Cipher implementation](implementations/caesar_freqAnalysis/)
+    - [Frequency Analysis Implementation](implementations/caesar_freqAnalysis)
+- [Advanced Encryption Standard (AES)](progression/4_AES/)
     - [AES implementation](implementations/AES/)
-5. 000
-6. [Intro To Asymmetric Cryptography](/progression/6_AsymIntro/IntroToAsymmetricCryptography)
+- [Intro To Asymmetric Cryptography](/progression/6_AsymIntro/IntroToAsymmetricCryptography.md)
+- [RSA](/progression/7_RSA/rsaNotes.md)
+    - [RSA Implementation](implementations/RSA)
 
 ---
