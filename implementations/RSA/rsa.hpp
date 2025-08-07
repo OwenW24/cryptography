@@ -1,3 +1,6 @@
+#ifndef RSA_HPP
+#define RSA_HPP
+
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
@@ -49,3 +52,5 @@ public:
     RSA(long p, long q);
     
 }; //need to for decrpt, need to accept others public key
+
+#endif
