@@ -1,8 +1,9 @@
 # DHKE
 
-### DHKE prerequisites
+## DHKE prerequisites
 
-#### Groups
+### Groups
+
 ![Image](/images/group.png)  
 The set $\mathbb{Z}_p^*$ consists of all integers $i =1, \dots, n-1$ for which $\gcd(i,n) = 1$, forms a abelian/commutative group under multiplication modulo $n$. The identity element is $e=1$.
 
@@ -10,7 +11,35 @@ The set $\mathbb{Z}_p^*$ consists of all integers $i =1, \dots, n-1$ for which $
 - This group is a abelian/commutative group.
 - The inverse of each element can be computed with the extended Euclidean algorithm.
 
-#### Diffie-Hellman Key exchange
+#### Cyclic groups
+
+**Finite Group** - A group $(G, \circ)$ is finite if it has a finite number of elements. We denote the cardinality or order of the group $G$ by $|G|$  
+
+- $(\mathbb{Z}_n, +):$ $|\mathbb{Z}_n| = n$ 
+- $(\mathbb{Z}_n^*, \cdot):$ $|\mathbb{Z}_n| = \Phi(n)$
+
+**Order of an element**
+The order $ord(a)$  of an element $a$ of a group $(G,\circ)$, is the smallest positive integer $k$ such that 
+$$a^k = a\circ a\circ \dots \circ a = 1$$
+, where 1 is the identity element of $G$
+
+**Cyclic Group**
+A group $G$ which contains an element $\alpha$ with maximum order $ord(\alpha) = |G|$ is said to be cyclic. Elements with maximum order are called primitive elements or generators.
+
+**Finding Cyclic Groups**
+For every prime $p$, ($\mathbb{Z}_p^*, \cdot)$ is an abelian finite cyclic group.
+
+Let $G$ be a finite cyclic group. Then, for every $a \in G$, it holds that:
+
+1. $a^{|G|} = 1$
+2. $ord(G) | (|G|)$  
+
+Let $G$ be a finite group. Then it holds that
+
+1. The number of primitive elements of $G$ is $\Phi(|G|)$
+2. If $|G|$ is prime, then, all elements $a \neq 1 \in G$ are primitive.
+
+## Diffie-Hellman Key exchange
 
 DHKE is based on the fact that for a prime $p$ the exponentiation in $\mathbb{Z}_p^*$ is a one-way function and exponentiation is communicative  
 $$k \equiv (\alpha ^x) ^y \equiv (\alpha ^y) ^x \mod p$$
