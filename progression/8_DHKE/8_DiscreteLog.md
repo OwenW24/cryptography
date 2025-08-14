@@ -39,6 +39,39 @@ Let $G$ be a finite group. Then it holds that
 1. The number of primitive elements of $G$ is $\Phi(|G|)$
 2. If $|G|$ is prime, then, all elements $a \neq 1 \in G$ are primitive.
 
+**Discrete Logarithm Problem**
+Given $p, \beta \in \mathbb{Z}_P^*$, **and** primitive element $\alpha$ find $x$ such that  
+$$\alpha^x \equiv \beta \mod p$$
+**Diffie-Hellman Problem**
+Attacker knows: $\alpha, p, A, B$  
+Attacker wants: $k_{AB} = \alpha^{ab}$ 
+
+Solving the Diffie-Hellman problem
+1) compute $a = \log_\alpha A \mod p$  
+2) compute $B^a = \alpha^{ab} = k_{ab}$  
+
+Step 1 is computationally infeasible if $p$ is large enough.
+## The Generalized Discrete Logarithm Problem
+
+**Generalized DLP**
+Given cyclic group $G$ ($|G| = n$), primitive element $\alpha \in G$, and another element $\beta \in G$, the discrete logarithm problem is finding the integer $x$ $(1\leq x \leq n)$ such that:
+$$\beta = \alpha \circ \alpha \circ \dots \circ \alpha = \begin{cases} \alpha^x, & \text{if } \circ=\times  \\ \alpha x, & \text{if } \circ = +\end{cases}$$
+**Fields usable by Discrete Log Problems**
+
+1) $\mathbb Z _p ^*$ : multiplicative group of a prime field
+2) $GF(2^m)^*$: multiplicative group of a extension field
+3) Elliptic curves: the group consists of points on a curve
+4) Generalizations of elliptic curves: e.g. hyper elliptic curves
+
+
+## Attacks
+
+1) Brute force: check every integer $x \in n$ to determine if $\alpha^x = \beta$. This requires $O(n)$ time. To prevent against brute force, $n$ must be very large ($n \gt 2^{80}$) 
+2) Square root attacks (baby-step giant-step algorithm & Pollard's-Rho algorithm): compute $x$ in $\sqrt n$ steps. If $n \approx 2^{80}$, $\sqrt n = \sqrt {2^{80}} = 2^{40}$, which makes this attack computationally feasible. Thus to prevent against square root attacks $n$ must be $n > 160$.
+3) Index Calculus Attack: For certain groups $G$ the more powerful index-calculus attack exists. In particular the attack works in $\mathbb Z_p^*$ and $GF(2^m)^*$. In practice $2^{2048} \gt p, 2^m \gt 2^{1024}$ 
+
+Square root attacks work in any group, they are the best know attack for elliptic curves.
+
 ## Diffie-Hellman Key exchange
 
 DHKE is based on the fact that for a prime $p$ the exponentiation in $\mathbb{Z}_p^*$ is a one-way function and exponentiation is communicative  
@@ -100,3 +133,4 @@ int main()
     return 0;
 }
 ````
+

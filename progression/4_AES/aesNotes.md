@@ -9,7 +9,7 @@ a) Element Representation
 The elements of $\text{BF}(2^m)$ are polynomials ( $a_{m-1}x^{m-1} + \dots + a_1 x + a_0 = A(x) \in \text{BF}(2^m)$ )
 $$a_i \in \text{GF}(2) = \{0,1\}$$
 
-Ex: $\text{GF}(2^3)$, any element must have the form $A(x) = a_2 x^2 + a_1 + a_0 $.
+Ex: $\text{GF}(2^3)$, any element must have the form $A(x) = a_2 x^2 + a_1 + a_0$.
 Thus $\text{GF}(2^3) = \{0, 1, x, x+1, x^2, x^2+1, x^2+x, x^2 +x + 1\}$
 
 How to compute with these elements??
