@@ -17,13 +17,14 @@ public:
     int alpha;  
     int k_pub;
 private:
+    int seed;
     int k_priv;
     int k_shared;
 
 // helpers
 
-    void choose_p(int t);
-    void choose_alpha(int t);
+    void choose_p();
+    void choose_alpha();
 
     void choose_k_priv();
     void compute_k_pub();
@@ -33,13 +34,13 @@ protected:
 
 public:
 
-    void gen_domain_parameters(int t);
+    void gen_domain_parameters();
     std::pair<int, int> get_domain_parameters();
 
-    void key_exchange(DHKE other);
+    void key_exchange(DHKE &other);
 
     int get_k_shared();
     
     DHKE();
-    DHKE(int t);  // for random time
+    DHKE(int t);  // for random time/seed
 };

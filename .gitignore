@@ -1,1 +1,4 @@
 scratch/
+*a.out
+*.vscode
+*problems.md
